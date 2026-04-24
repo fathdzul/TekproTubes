@@ -5,26 +5,36 @@ import java.math.BigDecimal;
 
 public class LoanService {
     public Loan createLoan(Borrower borrower, BigDecimal amount) {
+
         // =========================
-        // VALIDASI UTAMA (TC-01)
+        // VALIDASI (delegasi ke domain)
         // =========================
-        // Jika borrower belum terverifikasi,
-        // maka proses harus dihentikan
-        if (!borrower.isVerified()) {
+
+        validateBorrower(borrower);
+
+        // =========================
+        // CREATE LOAN (domain object)
+        // =========================
+        Loan loan = new Loan();
+
+        // =========================
+        // BUSINESS ACTION (domain behavior)
+        // =========================
+        if (borrower.getCreditScore() >= 600) {
+            loan.approve();
+        } else {
+            loan.reject();
+        }
+
+        return loan;
+    }
+
+    // =========================
+    // PRIVATE VALIDATION METHOD
+    // =========================
+    private void validateBorrower(Borrower borrower) {
+        if (!borrower.canApplyLoan()) {
             throw new IllegalArgumentException("Borrower not verified");
         }
-        // Membuat objek loan baru
-        Loan loan = new Loan();
-        // =========================
-        // LOGIC SEDERHANA (sementara)
-        // =========================
-        // Jika credit score tinggi → APPROVED
-        // Jika tidak → REJECTED
-        if (borrower.getCreditScore() >= 600) {
-            loan.setStatus(Loan.Status.APPROVED);
-        } else {
-            loan.setStatus(Loan.Status.REJECTED);
-        }
-        return loan;
     }
 }

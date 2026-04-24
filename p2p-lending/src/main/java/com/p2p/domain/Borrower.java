@@ -22,5 +22,19 @@ public class Borrower {
     public int getCreditScore() {
         return creditScore;
     }
+
+    // Step 2 (domain improvement)
+    // public boolean canApplyLoan() {
+    //      return isVerified();
+    // }
+
+    // Step 6 (replace canApplyLoan())
+    // =========================
+    // DOMAIN BEHAVIOR (NEW)
+    // =========================
+    public boolean canApplyLoan() {
+        return verified;
+    }
+
 }
 // Class ini merepresentasikan pinjaman
