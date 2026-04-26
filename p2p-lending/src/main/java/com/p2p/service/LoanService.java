@@ -9,12 +9,13 @@ public class LoanService {
     private static final Logger logger = LogManager.getLogger(LoanService.class);
 
     public Loan createLoan(Borrower borrower, BigDecimal amount) {
-        logger.info("Memproses pengajuan pinjaman, nominal: {}", amount);
+        logger.info("Memproses pengajuan pinjaman, amount: {}", amount);
 
         // =========================
         // VALIDASI (delegasi ke domain)
         // =========================
         validateBorrower(borrower);
+        validateAmount(amount);
 
         // =========================
         // CREATE LOAN (domain object)
@@ -44,5 +45,13 @@ public class LoanService {
             throw new IllegalArgumentException("Borrower not verified");
         }
         logger.debug("Borrower verified, lanjut proses...");
+    }
+
+    private void validateAmount(BigDecimal amount) {
+        if (!Loan.isValidAmount(amount)) {
+            logger.error("Pinjaman DITOLAK - amount tidak valid: {}", amount);
+            throw new IllegalArgumentException("Amount harus lebih dari 0");
+        }
+        logger.debug("Amount valid: {}", amount);
     }
 }

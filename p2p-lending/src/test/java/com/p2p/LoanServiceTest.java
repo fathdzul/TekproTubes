@@ -49,4 +49,40 @@ public class LoanServiceTest {
 
         logger.info("TC-01 Berhasil - exception berhasil dilempar seperti yang diharapkan");
     }
+
+    @Test
+    void shouldRejectLoanWhenAmountIsZeroOrNegative() {
+        logger.info("TC-02: shouldRejectLoanWhenAmountIsZeroOrNegative");
+
+        // =====================================================
+        // SCENARIO:
+        // Borrower sudah terverifikasi (KYC = true)
+        // Ketika borrower mengajukan pinjaman dengan amount <= 0
+        // Maka sistem harus menolak dengan melempar exception
+        // =====================================================
+
+        // =========================
+        // Arrange (Initial Condition)
+        // =========================
+        logger.debug("Arrange: membuat borrower valid dengan amount nol");
+        // Borrower sudah lolos KYC
+        Borrower borrower = new Borrower(true, 700);
+
+        LoanService loanService = new LoanService();
+
+        // Amount tidak valid (nol)
+        BigDecimal amount = BigDecimal.ZERO;
+
+        // =========================
+        // ACTION + ASSERT (Act & Assert)
+        // =========================
+        logger.debug("Act: borrower mencoba mengajukan pinjaman sebesar {}", amount);
+        assertThrows(IllegalArgumentException.class, () -> {
+            loanService.createLoan(borrower, amount);
+        });
+
+        logger.info("TC-02 Berhasil - exception berhasil dilempar untuk amount tidak valid");
+    }
+
+    
 }
