@@ -120,4 +120,40 @@ public class LoanServiceTest {
         assertEquals(Loan.Status.APPROVED, loan.getStatus());
         logger.info("TC-03 Berhasil - loan berstatus APPROVED sesuai yang diharapkan");
     }
+
+    @Test
+    void shouldRejectLoanWhenCreditScoreLow() {
+        logger.info("TC-04: shouldRejectLoanWhenCreditScoreLow");
+
+        // =====================================================
+        // SCENARIO:
+        // Borrower sudah terverifikasi (KYC = true)
+        // Credit score < 600 (di bawah threshold)
+        // Ketika borrower mengajukan pinjaman
+        // Maka sistem harus menolak loan
+        // =====================================================
+
+        // =========================
+        // Arrange (Initial Condition)
+        // =========================
+        logger.debug("Arrange: membuat borrower verified dengan credit score rendah");
+        // Borrower sudah KYC, tapi credit score di bawah threshold
+        Borrower borrower = new Borrower(true, 500);
+
+        LoanService loanService = new LoanService();
+
+        BigDecimal amount = BigDecimal.valueOf(1000);
+
+        // =========================
+        // Act (Action)
+        // =========================
+        logger.debug("Act: borrower mengajukan pinjaman sebesar {}", amount);
+        Loan loan = loanService.createLoan(borrower, amount);
+
+        // =========================
+        // Assert (Expected Result)
+        // =========================
+        assertEquals(Loan.Status.REJECTED, loan.getStatus());
+        logger.info("TC-04 Berhasil - status loan: {}", loan.getStatus());
+    }
 }
