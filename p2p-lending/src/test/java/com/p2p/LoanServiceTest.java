@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.p2p.domain.Borrower;
+import com.p2p.domain.Loan;
 import com.p2p.service.LoanService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,5 +85,39 @@ public class LoanServiceTest {
         logger.info("TC-02 Berhasil - exception berhasil dilempar untuk amount tidak valid");
     }
 
-    
+    @Test
+    void shouldApproveLoanWhenCreditScoreHigh() {
+        logger.info("TC-03: shouldApproveLoanWhenCreditScoreHigh");
+
+        // =====================================================
+        // SCENARIO:
+        // Borrower sudah terverifikasi (KYC = true)
+        // Credit score >= 600 (di atas threshold)
+        // Ketika borrower mengajukan pinjaman
+        // Maka sistem harus menyetujui loan
+        // =====================================================
+
+        // =========================
+        // Arrange (Initial Condition)
+        // =========================
+        logger.debug("Arrange: membuat borrower verified dengan credit score tinggi");
+        // Borrower sudah KYC, credit score di atas threshold
+        Borrower borrower = new Borrower(true, 700);
+
+        LoanService loanService = new LoanService();
+
+        BigDecimal amount = BigDecimal.valueOf(1000);
+
+        // =========================
+        // Act (Action)
+        // =========================
+        logger.debug("Act: borrower mengajukan pinjaman sebesar {}", amount);
+        Loan loan = loanService.createLoan(borrower, amount);
+
+        // =========================
+        // Assert (Expected Result)
+        // =========================
+        assertEquals(Loan.Status.APPROVED, loan.getStatus());
+        logger.info("TC-03 Berhasil - loan berstatus APPROVED sesuai yang diharapkan");
+    }
 }

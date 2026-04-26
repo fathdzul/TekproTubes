@@ -25,7 +25,7 @@ public class Borrower {
 
     // Step 2 (domain improvement)
     // public boolean canApplyLoan() {
-    //      return isVerified();
+    // return isVerified();
     // }
 
     // Step 6 (replace canApplyLoan())
@@ -36,5 +36,9 @@ public class Borrower {
         return verified;
     }
 
+    // Menentukan apakah borrower layak mendapat pinjaman berdasarkan credit score
+    public boolean isEligible() {
+        return creditScore >= 600;
+    }
 }
 // Class ini merepresentasikan pinjaman

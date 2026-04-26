@@ -25,13 +25,7 @@ public class LoanService {
         // =========================
         // BUSINESS ACTION (domain behavior)
         // =========================
-        if (borrower.getCreditScore() >= 600) {
-            loan.approve();
-            logger.info("Pinjaman DISETUJUI - credit score: {}", borrower.getCreditScore());
-        } else {
-            loan.reject();
-            logger.info("Pinjaman DITOLAK - credit score di bawah batas: {}", borrower.getCreditScore());
-        }
+        processCreditScoring(borrower, loan);
 
         return loan;
     }
@@ -53,5 +47,15 @@ public class LoanService {
             throw new IllegalArgumentException("Amount harus lebih dari 0");
         }
         logger.debug("Amount valid: {}", amount);
+    }
+
+    private void processCreditScoring(Borrower borrower, Loan loan) {
+        if (borrower.isEligible()) {
+            loan.approve();
+            logger.info("Pinjaman DISETUJUI - credit score: {}", borrower.getCreditScore());
+        } else {
+            loan.reject();
+            logger.info("Pinjaman DITOLAK - credit score di bawah batas: {}", borrower.getCreditScore());
+        }
     }
 }
